@@ -1,21 +1,55 @@
 from flask import Flask, jsonify
+from importlib import import_module
+
 from flask_sqlalchemy import SQLAlchemy
+from config import config_dict
+from decouple import config
 from dotenv import load_dotenv
-from mysqlConnect import Connection
 
-# from api import api_blueprint
-
+ 
 import os
-
 load_dotenv()
 
 
-MYSQL_USER = os.getenv("MYSQL_USER")
-MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
-MYSQL_DB = os.getenv("MYSQL_DB")
-MYSQL_URL = os.getenv("MYSQL_URL")
+db = SQLAlchemy()
+ 
 app = Flask(__name__)
 
+
+def register_extensions(app):
+    db.init_app(app)
+
+
+def register_blueprints(app):
+    for module_name in (['authentication']):
+        module = import_module('{}.routes'.format(module_name))
+        app.register_blueprint(module.blueprint)
+
+
+def configure_database(app):
+
+    @app.before_first_request
+    def initialize_database():
+        db.create_all()
+
+    @app.teardown_request
+    def shutdown_session(exception=None):
+        db.session.remove()
+        db.session.close()
+
+# WARNING: Don't run with debug turned on in production!
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+ 
+# The configuration
+get_config_mode = 'Debug' if DEBUG else 'Production'
+
+app_config = config_dict[get_config_mode.capitalize()]
+
+app.config.from_object(app_config)
+register_extensions(app)
+register_blueprints(app)    
+configure_database(app)
 
 @app.route("/")
 def hello_world():

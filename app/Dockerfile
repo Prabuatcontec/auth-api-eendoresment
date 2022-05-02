@@ -16,6 +16,7 @@ RUN apt-get -y install gcc
 RUN apt install -y git
 RUN apt install -y cmake
 RUN pip3 install -r requirements.txt
+COPY .env .env
 COPY . /app
 WORKDIR /app
 RUN pip install python-dotenv

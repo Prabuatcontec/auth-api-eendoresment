@@ -14,6 +14,7 @@ load_dotenv()
 db = SQLAlchemy()
  
 app = Flask(__name__)
+app.config['SECRET_KEY'] = config('JWT_SECRET_KEY', default='sqlite')
 
 
 def register_extensions(app):

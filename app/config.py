@@ -16,12 +16,12 @@ class Config(object):
  
     # Mysql  database
     SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}:{}/{}'.format(
-        config(str(os.getenv('DB_ENGINE')), default='sqlite'),
-        config(str(os.getenv('MYSQL_USER')), default=str(os.getenv('MYSQL_USER'))),
-        config(str(os.getenv('MYSQL_PASSWORD')), default=str(os.getenv('MYSQL_PASSWORD'))),
-        config(str(os.getenv('MYSQL_URL')), default=str(os.getenv('MYSQL_URL'))),
-        config(str(os.getenv('MYSQL_PORT')), default=3306),
-        config(str(os.getenv('MYSQL_DB')), default=str(os.getenv('MYSQL_DB')))
+        config('DB_ENGINE', default='sqlite'),
+        config('MYSQL_USER', default=str(os.getenv('MYSQL_USER'))),
+        config('MYSQL_PASSWORD', default=str(os.getenv('MYSQL_PASSWORD'))),
+        config('MYSQL_URL', default=str(os.getenv('MYSQL_URL'))),
+        config('MYSQL_PORT', default=str(os.getenv('MYSQL_PORT'))),
+        config('MYSQL_DB', default=str(os.getenv('MYSQL_DB')))
     )
 
 

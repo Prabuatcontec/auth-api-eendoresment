@@ -14,8 +14,10 @@ load_dotenv()
 db = SQLAlchemy()
  
 app = Flask(__name__)
-app.config['SECRET_KEY'] = config('JWT_SECRET_KEY', default='sqlite')
-
+app.config['SECRET_KEY'] = config('SECRET_KEY', default=None)
+app.config['JWT_PRIVATE_KEY'] = config('JWT_PRIVATE_KEY', default=None)
+app.config['JWT_PUBLIC_KEY'] = config('JWT_PUBLIC_KEY', default=None)
+app.config['JWT_PASE_PHRASE'] = config('JWT_PASE_PHRASE', default=None)
 
 def register_extensions(app):
     db.init_app(app)

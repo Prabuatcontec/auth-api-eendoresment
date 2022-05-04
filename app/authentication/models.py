@@ -4,9 +4,14 @@ from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
 import datetime
 import jwt
+from jose import jws
+from cryptography.hazmat.primitives import serialization as crypto_serialization
+from cryptography.hazmat.backends import default_backend
+from dotenv import load_dotenv
 
 
 class Users(db.Model):
+    load_dotenv() 
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -29,21 +34,47 @@ class Users(db.Model):
     def __repr__(self):
         return str(self.username)
 
-    def encode_auth_token(self, user_id):
+    def encode_auth_token(self, user_id, username):
         """
         Generates the Auth Token
         :return: string
-        """
+        """ 
         try:
+            private_key_pem = str(app.config.get('JWT_PRIVATE_KEY'))
+            print(private_key_pem)
+            with open(private_key_pem, "rb") as key_file:
+                pem_bytes = key_file.read()
+                passphrase = bytes(app.config.get('JWT_PASE_PHRASE'),'utf-8')
+                private_key = crypto_serialization.load_pem_private_key(pem_bytes, password=passphrase, backend=default_backend())
+
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=3000),
                 'iat': datetime.datetime.utcnow(),
-                'sub': user_id
+                'username': username,
+                'id': user_id 
             }
+            return  jwt.encode(payload, private_key, algorithm='RS256')
             return jwt.encode(
                 payload,
                 app.config.get('SECRET_KEY'),
-                algorithm='HS256'
+                algorithm='RS256'
             )
         except Exception as e:
             return e
+
+    def decode_auth_token(self, encoded):
+        """
+        Generates the Auth Token
+        :return: string
+        """ 
+        try:
+            public_key_pem = str(app.config.get('JWT_PUBLIC_KEY'))
+            with open(public_key_pem, "rb") as key_file:
+                public_key = key_file.read()
+            
+             
+            return  jwt.decode(encoded, public_key, algorithms=["RS256"])
+        except Exception as e:
+            return e
+
+    

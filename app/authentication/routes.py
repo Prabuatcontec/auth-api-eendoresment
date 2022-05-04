@@ -13,7 +13,14 @@ blueprint = Blueprint(
 from authentication.models import Users 
 
 @blueprint.route('/login')
-def modellist():
-    user = Users.query.filter_by(username='brian.crehan@azmoves.com').first()
-    responseBody = { "results": user.username }
+def authentication():
+    user = Users().encode_auth_token(123, 'brian.crehan@azmoves.com')
+    responseBody = { "token": user }
+    return jsonify(responseBody), status.HTTP_200_OK
+
+@blueprint.route('/decode')
+def decode_token():
+    user = Users().encode_auth_token(123, 'brian.crehan@azmoves.com')
+    user = Users().decode_auth_token(user)
+    responseBody = { "results": user }
     return jsonify(responseBody), status.HTTP_200_OK

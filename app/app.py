@@ -18,6 +18,7 @@ app.config['SECRET_KEY'] = config('SECRET_KEY', default=None)
 app.config['JWT_PRIVATE_KEY'] = config('JWT_PRIVATE_KEY', default=None)
 app.config['JWT_PUBLIC_KEY'] = config('JWT_PUBLIC_KEY', default=None)
 app.config['JWT_PASE_PHRASE'] = config('JWT_PASE_PHRASE', default=None)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 def register_extensions(app):
     db.init_app(app)

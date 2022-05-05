@@ -30,7 +30,7 @@ def auth():
     else:
         return "does not match"
         
-@blueprint.route('/login', methods = ['POST'])
+@blueprint.route('/login_check', methods = ['POST'])
 def authentication():
     username = request.form['_username'] 
     password = request.form['_password']

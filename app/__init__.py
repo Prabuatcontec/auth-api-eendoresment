@@ -3,7 +3,7 @@ from apispec import APISpec
 from flask import Flask, jsonify, render_template, send_from_directory
 from importlib import import_module
 from flask_sqlalchemy import SQLAlchemy
-from config import config_dict
+from app.config import config_dict
 from decouple import config
 from dotenv import load_dotenv
 from apispec_webframeworks.flask import FlaskPlugin
@@ -28,7 +28,6 @@ version='1.0.0',
 openapi_version='3.0.2',
 plugins=[FlaskPlugin(), MarshmallowPlugin()]
 )
-
 
 @app.route('/api/swagger.json')
 def create_swagger_spec():
@@ -92,7 +91,7 @@ def register_extensions(app):
 
 def register_blueprints(app):
     for module_name in (['authentication']):
-        module = import_module('{}.routes'.format(module_name))
+        module = import_module('app.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 
 
@@ -128,6 +127,3 @@ def hello_world():
 @app.route("/health")
 def health():
     return jsonify(status='up')
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9000)

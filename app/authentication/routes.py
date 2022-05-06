@@ -1,7 +1,6 @@
 from time import sleep
 from flask import Blueprint, request, Response, session, Flask, jsonify, abort
 from sqlalchemy import false
-from mysqlConnect import Connection
 from flask_api import status
 import bcrypt
 
@@ -11,7 +10,7 @@ blueprint = Blueprint(
     url_prefix=''
 )
 
-from authentication.models import Users 
+from app.authentication.models import Users 
 
 @blueprint.route('/credential')
 def auth():

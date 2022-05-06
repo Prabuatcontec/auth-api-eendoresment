@@ -17,8 +17,8 @@ RUN apt install -y git
 RUN apt install -y cmake
 RUN pip3 install -r requirements.txt
 COPY .env .env
-COPY . /app
-WORKDIR /app
+COPY . /apps
+WORKDIR /apps/app
 RUN pip install python-dotenv
 RUN pip3 install pyyaml
 RUN pip3 install requests
@@ -30,4 +30,4 @@ RUN pip3 install mysqlclient
 EXPOSE 9000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=30s --retries=5 \
     CMD curl -f http://localhost/health || exit 1
-ENTRYPOINT ["python3", "app.py"]
+ENTRYPOINT ["python3", "run.py"]
